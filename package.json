@@ -1,0 +1,40 @@
+{
+  "name": "dsh-atlassian-mcp",
+  "version": "1.0.0",
+  "description": "Confluence and Jira connector for DeepSeek Harness, backed by Atlassian's remote MCP server.",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "mcp",
+    "atlassian",
+    "confluence",
+    "jira"
+  ],
+  "exports": {
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muhadif/dsh-atlassian-mcp.git"
+  },
+  "homepage": "https://github.com/muhadif/dsh-atlassian-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/muhadif/dsh-atlassian-mcp/issues"
+  }
+}
