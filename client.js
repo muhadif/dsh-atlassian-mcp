@@ -27,7 +27,10 @@ window.__ModuleLoader__.load({
         restarting: 'Restarting…',
         status: 'Status',
         connected: 'connected',
+        connecting: 'connecting',
         waiting: 'waiting for authorization',
+        closed: 'closed',
+        disabled: 'disabled',
         failed: 'failed',
         unknown: 'unknown',
         authHint: 'The first start opens a browser for Atlassian OAuth consent. Approve it once; the grant is cached in ~/.mcp-auth and refreshed automatically.',
@@ -48,7 +51,10 @@ window.__ModuleLoader__.load({
         restarting: 'Menyambung ulang…',
         status: 'Status',
         connected: 'tersambung',
+        connecting: 'menyambung',
         waiting: 'menunggu otorisasi',
+        closed: 'tertutup',
+        disabled: 'nonaktif',
         failed: 'gagal',
         unknown: 'tidak diketahui',
         authHint: 'Saat pertama dijalankan, browser terbuka untuk persetujuan OAuth Atlassian. Setujui sekali; token disimpan di ~/.mcp-auth dan diperbarui otomatis.',
@@ -99,12 +105,19 @@ window.__ModuleLoader__.load({
       },
     }, label)
 
+    // The manager's own vocabulary (dsh-mcp-client connection states).
+    const STATES = ['connected', 'connecting', 'waiting-credentials', 'closed', 'disabled', 'failed']
     const tone = state => {
-      const text = String(state ?? '')
-      if (/error|failed/i.test(text)) return T.error
-      if (/waiting|auth|pending/i.test(text)) return T.warn
-      if (/ready|open|connected|running/i.test(text)) return T.ok
+      if (state === 'connected') return T.ok
+      if (state === 'failed') return T.error
+      if (state === 'waiting-credentials' || state === 'connecting') return T.warn
       return T.muted
+    }
+    /** Map a manager state onto a localized label; an unknown state is shown verbatim. */
+    const stateLabel = (state, tr) => {
+      if (!state) return tr('unknown')
+      if (state === 'waiting-credentials') return tr('waiting')
+      return STATES.includes(state) ? tr(state) : String(state)
     }
 
     async function read() {
@@ -162,13 +175,7 @@ window.__ModuleLoader__.load({
       }
 
       const presets = state?.presets ?? {}
-      const statusText = state?.status?.state ?? state?.status ?? ''
-      const label = statusText
-        ? (/error|failed/i.test(String(statusText)) ? tr('failed')
-          : /waiting|auth/i.test(String(statusText)) ? tr('waiting')
-            : /ready|open|connected|running/i.test(String(statusText)) ? tr('connected')
-              : String(statusText))
-        : tr('unknown')
+      const statusState = state?.status?.state ?? ''
 
       return h(
         'div',
@@ -216,7 +223,7 @@ window.__ModuleLoader__.load({
           'div',
           { style: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' } },
           button(busy ? tr('saving') : tr('save'), submit, busy),
-          h('span', { style: { color: tone(statusText) } }, `${tr('status')}: ${label}`),
+          h('span', { style: { color: tone(statusState) } }, `${tr('status')}: ${stateLabel(statusState, tr)}`),
         ),
         error ? h('span', { style: { color: T.error } }, error) : null,
         note ? h('span', { style: { color: T.ok } }, note) : null,
