@@ -1,12 +1,13 @@
+# dsh-atlassian-mcp bundle layer.
+#
+# One row, this package. The Atlassian remote MCP server is registered at runtime by index.js from
+# the plugin's own config file, which is what the settings card edits — so the endpoint is not
+# hard-coded here and switching it needs no profile edit.
+#
+# Disable it from the profile patch with:
+#   - id: atlassian-mcp
+#     disabled: true
 - insert:
     - id: atlassian-mcp
-      name: '@deepseek-ai/dsh-mcp-client'
-      config:
-        serverName: atlassian
-        transport: stdio
-        command: npx
-        args:
-          - -y
-          - mcp-remote@0.16.6
-          - https://mcp.atlassian.com/v1/mcp/authv2
-        failOnStartupError: false
+      name: dsh-atlassian-mcp
+      config: {}

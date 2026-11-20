@@ -1,7 +1,7 @@
 {
   "name": "dsh-atlassian-mcp",
-  "version": "1.0.0",
-  "description": "Confluence and Jira connector for DeepSeek Harness, backed by Atlassian's remote MCP server.",
+  "version": "1.1.0",
+  "description": "Confluence and Jira for [DSH] through Atlassian's remote MCP server, with a settings card that owns the endpoint.",
   "license": "MIT",
   "private": false,
   "type": "module",
@@ -14,10 +14,14 @@
     "jira"
   ],
   "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
   "files": [
+    "index.js",
+    "client.js",
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg",
@@ -27,6 +31,17 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-mcp-manager": ">=0.2.2-rc.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-mcp-manager": {
+      "optional": true
     }
   },
   "repository": {
